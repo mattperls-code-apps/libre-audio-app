@@ -1,0 +1,61 @@
+{
+  "name": "libreaudio",
+  "version": "0.0.1",
+  "author": {
+    "name": "Matthew Perlman",
+    "email": "mattperls.code@gmail.com",
+    "url": "https://github.com/mattperls-code"
+  },
+  "description": "Liberating music from the inconvenience of cost",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.1.2",
+    "@fortawesome/react-native-fontawesome": "^0.3.0",
+    "@react-native-async-storage/async-storage": "^1.17.7",
+    "@react-native-community/slider": "^4.3.0",
+    "@react-native-masked-view/masked-view": "^0.2.7",
+    "@react-navigation/bottom-tabs": "^6.3.2",
+    "@react-navigation/native": "^6.0.11",
+    "@react-navigation/stack": "^6.2.2",
+    "array-shuffle": "^3.0.0",
+    "axios": "^0.27.2",
+    "react": "17.0.2",
+    "react-native": "0.68.2",
+    "react-native-draggable-flatlist": "^3.1.2",
+    "react-native-fast-image": "^8.5.11",
+    "react-native-gesture-handler": "^2.5.0",
+    "react-native-haptic-feedback": "^1.14.0",
+    "react-native-reanimated": "^2.1.0",
+    "react-native-safe-area-context": "^4.3.1",
+    "react-native-screens": "^3.15.0",
+    "react-native-share": "^7.8.0",
+    "react-native-splash-screen": "^3.3.0",
+    "react-native-svg": "^12.4.3",
+    "react-native-swipeable-item": "^2.0.7",
+    "react-native-track-player": "^2.1.4",
+    "react-native-view-shot": "^3.3.0",
+    "react-native-ytdl": "^4.8.3",
+    "rn-fetch-blob": "^0.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.9",
+    "@babel/runtime": "^7.18.9",
+    "@react-native-community/eslint-config": "^3.0.3",
+    "babel-jest": "^28.1.3",
+    "eslint": "^8.20.0",
+    "jest": "^28.1.3",
+    "metro-react-native-babel-preset": "^0.72.0",
+    "react-test-renderer": "17.0.2"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
