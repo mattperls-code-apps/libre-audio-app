@@ -22,6 +22,7 @@ const PlayerStack = ({ navigation, route }) => {
         ReactNativeHapticFeedback.trigger("impactLight", {
             enableVibrateFallback: false
         })
+        
         if(playerState == State.Playing){
             TrackPlayer.pause()
         } else {
@@ -37,7 +38,6 @@ const PlayerStack = ({ navigation, route }) => {
         thumbnail: route.params.artwork,
         duration: route.params.duration
     })
-    const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0)
 
     useEffect(() => {
         navigation.setOptions({
@@ -52,24 +52,10 @@ const PlayerStack = ({ navigation, route }) => {
         Event.PlaybackTrackChanged,
         Event.PlaybackQueueEnded
     ], (event) => {
-        if(event.type == Event.PlaybackError){
+        if(event.type == Event.PlaybackTrackChanged){
             TrackPlayer.getCurrentTrack().then((currentIndex) => {
-                TrackPlayer.getQueue().then((queue) => {
-                    if(currentIndex == queue.length - 1){
-                        navigation.navigate("App")
-                    }
-                })
-            })
-        } else if(event.type == Event.PlaybackTrackChanged){
-            if(event.hasOwnProperty("nextTrack")){
-                setCurrentPlayerIndex(event.nextTrack)
-            }
-            TrackPlayer.getCurrentTrack().then((currentIndex) => {
-                if(currentIndex == null){
-                    navigation.navigate("App")
-                } else {
-                    TrackPlayer.getQueue().then((queue) => {
-                        const track = queue[currentIndex]
+                if(currentIndex != null){
+                    TrackPlayer.getTrack(currentIndex).then((track) => {
                         setCurrentSong({
                             id: track.id,
                             title: track.title,
@@ -81,18 +67,16 @@ const PlayerStack = ({ navigation, route }) => {
                     })
                 }
             })
-        } else if(Event.PlaybackQueueEnded) {
-            TrackPlayer.getQueue().then((queue) => {
-                if(currentPlayerIndex == queue.length - 1){
-                    navigation.navigate("App")
-                }
-            })
         }
     })
 
     const [overridePosition, setOverridePosition] = useState(-1)
 
     const handleSeek = (position) => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: false
+        })
+
         setOverridePosition(position)
         TrackPlayer.seekTo(position).then(() => {
             setOverridePosition(-1)
@@ -100,6 +84,10 @@ const PlayerStack = ({ navigation, route }) => {
     }
 
     const attemptToSkipToPrevious = () => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: false
+        })
+
         setOverridePosition(0)
         TrackPlayer.pause().then(() => {
             TrackPlayer.getCurrentTrack().then((currentIndex) => {
@@ -121,6 +109,10 @@ const PlayerStack = ({ navigation, route }) => {
     }
 
     const attemptToSkipToNext = () => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: false
+        })
+        
         setOverridePosition(0)
         TrackPlayer.pause().then(() => {
             TrackPlayer.getCurrentTrack().then((currentIndex) => {
@@ -147,6 +139,10 @@ const PlayerStack = ({ navigation, route }) => {
     }
 
     const openAddToPlaylist = () => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: false
+        })
+
         navigation.push("SongInfo", currentSong)
     }
 

@@ -9,7 +9,7 @@ import { faEllipsisVertical, faCheck, faBars } from "@fortawesome/free-solid-svg
 
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"
 
-import TrackPlayer from "react-native-track-player"
+import TrackPlayer, { Capability } from "react-native-track-player"
 
 import getAudioUrl from "../scripts/getAudioUrl"
 
@@ -23,6 +23,15 @@ const SongItem = ({ navigation, id, title, artist, description, thumbnail, durat
         ReactNativeHapticFeedback.trigger("impactLight", {
             enableVibrateFallback: false
         })
+
+        const capabilities = [
+            Capability.Play,
+            Capability.Pause,
+            Capability.SeekTo,
+            Capability.SkipToPrevious,
+            Capability.SkipToNext
+        ]
+        TrackPlayer.updateOptions({ capabilities })
 
         getAudioUrl(id, (audio) => {
             TrackPlayer.reset().then(() => {
@@ -56,6 +65,16 @@ const SongItem = ({ navigation, id, title, artist, description, thumbnail, durat
                 useNativeDriver: true
             }).start(() => {
                 setActive(false)
+
+                const capabilities = [
+                    Capability.Play,
+                    Capability.Pause,
+                    Capability.SeekTo,
+                    Capability.SkipToPrevious,
+                    Capability.SkipToNext
+                ]
+                TrackPlayer.updateOptions({ capabilities })
+
                 getAudioUrl(id, (audio) => {
                     TrackPlayer.add({
                         id,

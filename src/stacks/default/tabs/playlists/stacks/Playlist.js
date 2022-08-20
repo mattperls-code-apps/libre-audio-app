@@ -9,6 +9,7 @@ import FastImage from "react-native-fast-image"
 
 import SongItem from "../../../../../components/SongItem"
 
+import TrackPlayer, { Capability } from "react-native-track-player"
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"
 import shuffleArray from "array-shuffle"
 
@@ -17,7 +18,6 @@ import { queryFilterSongs } from "../../../../../scripts/applyQueryFilter"
 import { fetchPlaylistAudio } from "../../../../../scripts/getAudioUrl"
 
 import { screen, colors } from "../../../../../constants"
-import TrackPlayer from "react-native-track-player"
 
 const PlaylistStack = ({ navigation, route }) => {
     const input = useRef()
@@ -78,6 +78,15 @@ const PlaylistStack = ({ navigation, route }) => {
         ReactNativeHapticFeedback.trigger("impactLight", {
             enableVibrateFallback: false
         })
+
+        const capabilities = [
+            Capability.Play,
+            Capability.Pause,
+            Capability.SeekTo,
+            Capability.SkipToPrevious,
+            Capability.SkipToNext
+        ]
+        TrackPlayer.updateOptions({ capabilities })
 
         fetchPlaylistAudio(shuffleArray(filteredSongs), route.params.name, (songs) => {
             TrackPlayer.reset().then(() => {
@@ -200,7 +209,7 @@ const PlaylistStack = ({ navigation, route }) => {
                 return (
                     <View style={styles.songItemsHeader}>
                         <View style={styles.songItemsCountContainer}>
-                            <Text style={styles.songItemsCountText}>{ songs.length } { songs.length == 1 ? "Song" : "Songs" }</Text>
+                            <Text style={styles.songItemsCountText}>{ filteredSongs.length } { filteredSongs.length == 1 ? "Song" : "Songs" }</Text>
                         </View>
                         <View style={{ width: "100%", marginVertical: 5, flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-evenly" }}>
                             {
@@ -215,7 +224,7 @@ const PlaylistStack = ({ navigation, route }) => {
                         <TouchableWithoutFeedback onPress={handleInputPress}>
                             <View style={styles.searchBar}>
                                 <FontAwesomeIcon style={{ marginHorizontal: 20 }} icon={faMagnifyingGlass} color={colors.flair} size={24} />
-                                <TextInput ref={input} defaultValue={query} onChangeText={handleChangeText} onEndEditing={handleEndEditing} style={styles.searchBarInput} selectionColor={colors.flair} placeholder={"Search Playlist"} placeholderTextColor={colors.dark} />
+                                <TextInput ref={input} defaultValue={query} onChangeText={handleChangeText} onEndEditing={handleEndEditing} style={styles.searchBarInput} selectionColor={colors.flair} placeholder={"Search Playlist"} placeholderTextColor={colors.dark} clearButtonMode={"always"} />
                             </View>
                         </TouchableWithoutFeedback>
                         {

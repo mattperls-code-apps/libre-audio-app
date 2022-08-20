@@ -7,6 +7,7 @@ import { captureRef } from "react-native-view-shot"
 
 import StatisticPreview from "../../../../../components/StatisticPreview"
 
+import ReactNativeHapticFeedback from "react-native-haptic-feedback"
 import Share from "react-native-share"
 
 import Storage from "../../../../../scripts/storage"
@@ -97,6 +98,10 @@ const DefaultStack = ({ navigation }) => {
     const summary = useRef()
 
     const shareSummary = () => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: false
+        })
+
         captureRef(summary, {
             format: "jpg",
             width: 400,

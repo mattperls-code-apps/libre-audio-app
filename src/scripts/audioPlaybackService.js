@@ -1,4 +1,4 @@
-import TrackPlayer, { Capability, Event } from "react-native-track-player"
+import TrackPlayer, { Event } from "react-native-track-player"
 
 import getAudioUrl from "./getAudioUrl"
 import Storage from "./storage"
@@ -10,15 +10,6 @@ const audioPlaybackService = async () => {
         playBuffer: 15,
         backBuffer: 15
     })
-
-    const capabilities = [
-        Capability.Play,
-        Capability.Pause,
-        Capability.SeekTo,
-        Capability.SkipToPrevious,
-        Capability.SkipToNext
-    ]
-    TrackPlayer.updateOptions({ capabilities })
 
     const playSubscriber = TrackPlayer.addEventListener(Event.RemotePlay, TrackPlayer.play)
     const pauseSubscriber = TrackPlayer.addEventListener(Event.RemotePause, TrackPlayer.pause)
@@ -79,31 +70,44 @@ const audioPlaybackService = async () => {
         })
     })
 
+    console.log("registered audio playback")
+
     let currentPlayerIndex = 0
 
     const changeSubscriber = TrackPlayer.addEventListener(Event.PlaybackTrackChanged, (e) => {
         if(e.hasOwnProperty("nextTrack")){
             currentPlayerIndex = e.nextTrack
         }
-    })
-    const endedSubscriber = TrackPlayer.addEventListener(Event.PlaybackQueueEnded, () => {
-        TrackPlayer.getTrack(currentPlayerIndex).then(track => {
-            const storage = new Storage()
-            storage.initialize(() => {
-                storage.incrementSongPlay(track.id)
-            })
-            TrackPlayer.getTrack(currentPlayerIndex + 1).then(nextTrack => {
-                if(nextTrack == null){
-                    TrackPlayer.destroy()
-                    TrackPlayer.setupPlayer({
-                        waitForBuffer: true,
-                        minBuffer: 30,
-                        playBuffer: 15,
-                        backBuffer: 15
+        if(e.hasOwnProperty("track") && e.hasOwnProperty("nextTrack")){
+            TrackPlayer.getTrack(e.track).then((track) => {
+                if(track.duration - e.position < 15){
+                    const storage = new Storage()
+                    storage.initialize(() => {
+                        storage.incrementSongPlay(track.id)
                     })
                 }
             })
-        })
+        }
+    })
+    
+    const endedSubscriber = TrackPlayer.addEventListener(Event.PlaybackQueueEnded, (e) => {
+        if(e.track == currentPlayerIndex){
+            TrackPlayer.getTrack(e.track).then((track) => {
+                if(track.duration - e.position < 15){
+                    const storage = new Storage()
+                    storage.initialize(() => {
+                        storage.incrementSongPlay(track.id)
+                    })
+                }
+                TrackPlayer.destroy()
+                TrackPlayer.setupPlayer({
+                    waitForBuffer: true,
+                    minBuffer: 30,
+                    playBuffer: 15,
+                    backBuffer: 15
+                })
+            })
+        }
     })
 
     return () => {

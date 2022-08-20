@@ -10,6 +10,8 @@ import PlaylistStack from "./stacks/Playlist"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 
+import ReactNativeHapticFeedback from "react-native-haptic-feedback"
+
 import { screen, colors } from "../../../../constants"
 
 const PlaylistsTab = () => {
@@ -37,7 +39,12 @@ const PlaylistsTab = () => {
                     headerTitle: route.params.name,
                     headerLeft: () => {
                         return (
-                            <TouchableOpacity onPress={navigation.goBack} activeOpacity={0.8}>
+                            <TouchableOpacity onPress={() => {
+                                ReactNativeHapticFeedback.trigger("impactLight", {
+                                    enableVibrateFallback: false
+                                })
+                                navigation.goBack()
+                            }} activeOpacity={0.8}>
                                 <View style={{ paddingHorizontal: 20, height: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <FontAwesomeIcon icon={faChevronLeft} color={colors.flair} size={24} />
                                 </View>

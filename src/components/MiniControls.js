@@ -21,6 +21,7 @@ const MiniControls = ({ navigation }) => {
         ReactNativeHapticFeedback.trigger("impactLight", {
             enableVibrateFallback: false
         })
+
         if(playerState == State.Playing){
             TrackPlayer.pause()
         } else {
@@ -51,6 +52,7 @@ const MiniControls = ({ navigation }) => {
                     if(currentIndex == queue.length - 1){
                         Alert.alert("Please Try Again", "An error occurred playing the last song.\n\nIf this keeps happening, try removing the song from your library and adding it again.")
                         setOpen(false)
+                        navigation.navigate("App")
                     } else {
                         Alert.alert("Error Playing Song", "An error occurred playing the last song. It was automatically added back to the end of the current queue.\n\nIf this keeps happening, try removing the song from your library and adding it again.")
                     }
@@ -58,15 +60,14 @@ const MiniControls = ({ navigation }) => {
             })
         } else if(event.type == Event.PlaybackTrackChanged){
             if(event.hasOwnProperty("nextTrack")){
+                if(event.position == 0){
+                    setOpen(true)
+                }
                 setCurrentPlayerIndex(event.nextTrack)
             }
-            setOpen(true)
             TrackPlayer.getCurrentTrack().then((currentIndex) => {
-                if(currentIndex == null){
-                    setOpen(false)
-                } else {
-                    TrackPlayer.getQueue().then((queue) => {
-                        const track = queue[currentIndex]
+                if(currentIndex != null){
+                    TrackPlayer.getTrack(currentIndex).then((track) => {
                         setCurrentSong({
                             id: track.id,
                             title: track.title,
@@ -80,15 +81,18 @@ const MiniControls = ({ navigation }) => {
                 }
             })
         } else if(event.type == Event.PlaybackQueueEnded){
-            TrackPlayer.getQueue().then((queue) => {
-                if(currentPlayerIndex == queue.length - 1){
-                    setOpen(false)
-                }
-            })
+            if(event.track == currentPlayerIndex){
+                setOpen(false)
+                navigation.navigate("App")
+            }
         }
     })
 
     const openPlayer = () => {
+        ReactNativeHapticFeedback.trigger("impactLight", {
+            enableVibrateFallback: false
+        })
+        
         navigation.push("Player", {
             id: currentSong.id,
             title: currentSong.title,

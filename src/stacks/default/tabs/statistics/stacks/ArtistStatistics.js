@@ -110,7 +110,7 @@ const ArtistStatisticsStack = ({ navigation, route }) => {
                     </View>
                 </TouchableOpacity>
             </View>
-            <ScrollView style={{ backgroundColor: colors.dark }} contentContainerStyle={{ paddingBottom: 60 }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: colors.dark }} contentContainerStyle={{ paddingBottom: 60 }}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.headerText}>TOP { Math.min(10, topArtists.length) } ARTISTS</Text>
                 </View>

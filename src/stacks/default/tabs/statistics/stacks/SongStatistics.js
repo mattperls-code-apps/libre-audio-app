@@ -56,7 +56,15 @@ const SongStatisticsStack = ({ navigation, route }) => {
         }
     }, [])
     
-    const filteredSongs = getPlaysInTimeRange(songs, timeRange)
+    const filteredSongs = getPlaysInTimeRange(songs, timeRange).sort((a, b) => {
+        if(a.plays < b.plays){
+            return 1
+        } else if(a.plays > b.plays){
+            return -1
+        } else {
+            return 0
+        }
+    })
 
     const topSongs = []
     filteredSongs.forEach((song, index) => {
@@ -89,7 +97,7 @@ const SongStatisticsStack = ({ navigation, route }) => {
                     </View>
                 </TouchableOpacity>
             </View>
-            <ScrollView style={{ backgroundColor: colors.dark }} contentContainerStyle={{ paddingBottom: 60 }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: colors.dark }} contentContainerStyle={{ paddingBottom: 60 }}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.headerText}>TOP { Math.min(10, filteredSongs.length) } SONGS</Text>
                 </View>

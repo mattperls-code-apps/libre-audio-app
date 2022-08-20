@@ -7,7 +7,7 @@ import { faMagnifyingGlass, faShuffle } from "@fortawesome/free-solid-svg-icons"
 
 import SongItem from "../../../../components/SongItem"
 
-import TrackPlayer from "react-native-track-player"
+import TrackPlayer, { Capability } from "react-native-track-player"
 import ReactNativeHapticFeedback from "react-native-haptic-feedback"
 
 import shuffleArray from "array-shuffle"
@@ -72,6 +72,15 @@ const LibraryTab = ({ navigation }) => {
         ReactNativeHapticFeedback.trigger("impactLight", {
             enableVibrateFallback: false
         })
+
+        const capabilities = [
+            Capability.Play,
+            Capability.Pause,
+            Capability.SeekTo,
+            Capability.SkipToPrevious,
+            Capability.SkipToNext
+        ]
+        TrackPlayer.updateOptions({ capabilities })
 
         fetchPlaylistAudio(shuffleArray(filteredSongs), "Library", (songs) => {
             TrackPlayer.reset().then(() => {
