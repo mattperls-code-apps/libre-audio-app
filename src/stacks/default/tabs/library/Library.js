@@ -98,7 +98,7 @@ const LibraryTab = ({ navigation }) => {
                 return (
                     <View style={styles.songsItemsHeader}>
                         <View style={styles.songsItemsCountContainer}>
-                            <Text style={styles.songsItemsCountText}>{ songs.length } { songs.length == 1 ? "Song" : "Songs" }</Text>
+                            <Text style={styles.songsItemsCountText}>{ filteredSongs.length } { filteredSongs.length == 1 ? "Song" : "Songs" }</Text>
                         </View>
                         <TouchableWithoutFeedback onPress={handleInputPress}>
                             <View style={styles.searchBar}>
@@ -107,7 +107,7 @@ const LibraryTab = ({ navigation }) => {
                             </View>
                         </TouchableWithoutFeedback>
                         {
-                            songs.length != 0 && (
+                            filteredSongs.length != 0 && (
                                 <View style={styles.shuffleContainer}>
                                     <TouchableOpacity onPress={handleShufflePress} activeOpacity={0.8}>
                                         <View style={{ paddingHorizontal: 30, paddingVertical: 10, flexDirection: "row", alignItems: "center" }}>

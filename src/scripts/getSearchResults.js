@@ -17,7 +17,7 @@ const getSearchResults = (query, callback) => {
             searchResults = data?.contents?.sectionListRenderer?.contents?.[1]?.itemSectionRenderer?.contents
         }
         
-        const rawVideoResults = searchResults.filter(item => item.hasOwnProperty("compactVideoRenderer")).map(item => item.compactVideoRenderer)
+        const rawVideoResults = searchResults.filter(item => item.hasOwnProperty("videoWithContextRenderer")).map(item => item.videoWithContextRenderer)
         
         const videos = []
         rawVideoResults.forEach(video => {
@@ -26,7 +26,7 @@ const getSearchResults = (query, callback) => {
                 const artist = formatArtist(labelParts[labelParts.length - 1].split(" - ")[0])
                 videos.push({
                     id: video.videoId,
-                    title: JSON.parse(`"` + video.title.runs[0].text + `"`),
+                    title: JSON.parse(`"` + video.headline.runs[0].text + `"`),
                     artist,
                     thumbnail: video.thumbnail.thumbnails[video.thumbnail.thumbnails.length - 1].url,
                     duration: timeStringToLength(video.lengthText.runs[0].text)
@@ -35,6 +35,7 @@ const getSearchResults = (query, callback) => {
                 console.warn(err)
             }
         })
+
         callback(videos)
     }).catch((err) => {
         console.warn(err)
