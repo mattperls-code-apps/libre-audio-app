@@ -9,6 +9,7 @@ import DefaultStack from "./stacks/default/Default"
 import PlayerStack from "./stacks/player/Player"
 import ReorderQueueStack from "./stacks/reorderQueue/ReorderQueue"
 import SongInfoStack from "./stacks/songInfo/SongInfo"
+import MergeStack from "./stacks/merge/Merge"
 import AddSongsStack from "./stacks/addSongs/AddSongs"
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
@@ -85,6 +86,11 @@ const App = () => {
                 <Stack.Screen name={"Queue"} component={ReorderQueueStack} />
                 <Stack.Screen name={"SongInfo"} component={SongInfoStack} options={{
                     headerTitle: "Add To Playlists"
+                }} />
+                <Stack.Screen name={"Merge"} component={MergeStack} options={({ route }) => {
+                    return {
+                        headerTitle: "Merge " + route.params.title
+                    }
                 }} />
                 <Stack.Screen name={"AddSongs"} component={AddSongsStack} options={({ route }) => {
                     return {

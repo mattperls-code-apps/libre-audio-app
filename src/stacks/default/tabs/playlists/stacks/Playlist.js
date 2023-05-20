@@ -171,7 +171,7 @@ const PlaylistStack = ({ navigation, route }) => {
             },
             {
                 text: "Confirm",
-                style: "default",
+                style: "destructive",
                 onPress: () => {
                     const storage = new Storage()
                     storage.initialize(() => {

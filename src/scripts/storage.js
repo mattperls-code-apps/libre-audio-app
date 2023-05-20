@@ -20,17 +20,19 @@ class Storage {
             path,
             IOSBackgroundTask: true
         }).fetch("GET", audioUrl).then(() => {
-            for(let i = 0;i<this.data.songs.length;i++){
-                if(this.data.songs[i].id == id){
-                    this.data.songs[i].downloaded = true
-                    i = this.data.songs.length
+            this.initialize(() => {
+                for(let i = 0;i<this.data.songs.length;i++){
+                    if(this.data.songs[i].id == id){
+                        this.data.songs[i].downloaded = true
+                        i = this.data.songs.length
+                    }
                 }
-            }
-            console.log("downloaded " + this.getSong(id).title)
-            AsyncStorage.setItem("libre-storage", JSON.stringify(this.data), (err) => {
-                if(err){
-                    console.warn(err)
-                }
+                console.log("downloaded " + this.getSong(id).title)
+                AsyncStorage.setItem("libre-storage", JSON.stringify(this.data), (err) => {
+                    if(err){
+                        console.warn(err)
+                    }
+                })
             })
         })
     }
@@ -124,6 +126,17 @@ class Storage {
                 callback()
             }
         })
+    }
+    mergeSong(mergingId, mergeBaseId, callback){
+        // merging to be deleted, merge base to assume stat data
+        const mergingSong = this.getSong(mergingId)
+        const mergeBaseSong = this.getSong(mergeBaseId)
+
+        console.log([ ...mergingSong.plays, ...mergeBaseSong.plays ].sort().reverse())
+
+        this.data.songs.find(song => song.id == mergeBaseId).plays = [ ...mergingSong.plays, ...mergeBaseSong.plays ].sort().reverse()
+
+        this.removeSong(mergingId, callback)
     }
     getPlaylist(id){
         for(let i = 0;i<this.data.playlists.length;i++){

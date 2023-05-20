@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 
-import { TouchableOpacity, TouchableWithoutFeedback, View, Text, TextInput, FlatList, StyleSheet, Animated } from "react-native"
+import { TouchableOpacity, TouchableWithoutFeedback, View, Text, TextInput, FlatList, StyleSheet, Animated, Alert } from "react-native"
 
 import FastImage from "react-native-fast-image"
 
@@ -14,8 +14,6 @@ import ReactNativeHapticFeedback from "react-native-haptic-feedback"
 import Storage from "../../scripts/storage"
 
 import { screen, colors } from "../../constants"
-
-// TODO: thumbnail aspect ratio (kinda) + header border bottom + thumbnail border radius + playlist thumbnails are missing?
 
 const SongInfoStack = ({ navigation, route }) => {
     const { id, thumbnail, duration } = route.params
@@ -44,7 +42,7 @@ const SongInfoStack = ({ navigation, route }) => {
         }).start()
     }
 
-    const handleOverlayDismiss = () => {
+    const handleOverlayDismiss = (callback) => {
         ReactNativeHapticFeedback.trigger("impactLight", {
             enableVibrateFallback: false
         })
@@ -54,6 +52,7 @@ const SongInfoStack = ({ navigation, route }) => {
             useNativeDriver: true
         }).start(() => {
             setShowEditOptions(false)
+            if (typeof callback == "function") callback()
         })
     }
 
@@ -67,6 +66,20 @@ const SongInfoStack = ({ navigation, route }) => {
                 setArtist(trimmedArtist.length == 0 ? artist : trimmedArtist)
                 handleOverlayDismiss()
             })
+        })
+    }
+
+    const handleMerge = () => {
+        const storage = new Storage()
+        storage.initialize(() => {
+            if(storage.data.songs.some(song => song.id == id)){
+                handleOverlayDismiss(() => {
+                    navigation.goBack()
+                    navigation.push("Merge",{ id, title })
+                })
+            } else {
+                Alert.alert("Action Unavailable", "You can only merge songs already in your library.")
+            }
         })
     }
 
@@ -187,6 +200,11 @@ const SongInfoStack = ({ navigation, route }) => {
                             <TouchableOpacity onPress={updateSongInfo} activeOpacity={0.8}>
                                 <View style={styles.buttonContainer}>
                                     <Text style={styles.buttonText}>Save</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleMerge} activeOpacity={0.8}>
+                                <View style={styles.buttonContainer}>
+                                    <Text style={styles.buttonText}>Merge and Delete</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={handleOverlayDismiss} activeOpacity={0.8}>

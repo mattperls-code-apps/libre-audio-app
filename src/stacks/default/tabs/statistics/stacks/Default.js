@@ -21,14 +21,14 @@ const DefaultStack = ({ navigation }) => {
     useEffect(() => {
         const storage = new Storage()
         storage.initialize(() => {
-            setSongs(storage.data.songs)
+            setSongs(getPlaysInTimeRange(storage.data.songs, 1))
         })
 
         const handleTabNavigate = () => {
             if(navigation.getParent().getState().index == 3){
                 const storage = new Storage()
                 storage.initialize(() => {
-                    setSongs(storage.data.songs)
+                    setSongs(getPlaysInTimeRange(storage.data.songs, 1))
                 })
             }
         }
@@ -50,21 +50,13 @@ const DefaultStack = ({ navigation }) => {
 
     let totalPlays = 0
     let totalMinutes = 0
-    getPlaysInTimeRange(songs, 1).forEach(song => {
+    songs.forEach(song => {
         totalPlays += song.plays
         totalMinutes += song.plays * song.duration
     })
     totalMinutes = Math.floor(totalMinutes / 60)
 
-    let sortedSongs = [...songs].sort((a, b) => {
-        if(a.plays.length < b.plays.length){
-            return 1
-        } else if(a.plays.length > b.plays.length){
-            return -1
-        } else {
-            return 0
-        }
-    })
+    let sortedSongs = [...songs].sort((a, b) => b.plays - a.plays)
 
     let artists = {}
     songs.forEach(song => {
@@ -79,15 +71,7 @@ const DefaultStack = ({ navigation }) => {
         })
     })
 
-    let sortedArtists = Object.entries(artists).sort((a, b) => {
-        if(a[1] < b[1]){
-            return 1
-        } else if(a[1] > b[1]){
-            return -1
-        } else {
-            return 0
-        }
-    }).slice(0, 5)
+    let sortedArtists = Object.entries(artists).sort((a, b) => b[1] - a[1]).slice(0, 5)
 
     let artistThumbnails = []
     sortedArtists.forEach(artist => {
