@@ -68,11 +68,15 @@ const DefaultStack = ({ navigation }) => {
 
     let artists = {}
     songs.forEach(song => {
-        if(artists.hasOwnProperty(song.artist)){
-            artists[song.artist] += song.plays.length * song.duration
-        } else {
-            artists[song.artist] = song.plays.length * song.duration
-        }
+        const minutesListened = song.plays * song.duration
+
+        song.artist.split(",").map(artist => artist.trim()).filter(artist => artist != "").forEach((artist) => {
+            if(artists.hasOwnProperty(artist)){
+                artists[artist] += minutesListened
+            } else {
+                artists[artist] = minutesListened
+            }
+        })
     })
 
     let sortedArtists = Object.entries(artists).sort((a, b) => {

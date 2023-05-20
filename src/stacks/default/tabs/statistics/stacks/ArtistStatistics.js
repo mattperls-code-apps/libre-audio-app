@@ -61,12 +61,15 @@ const ArtistStatisticsStack = ({ navigation, route }) => {
     let artists = {}
     filteredSongs.forEach((song, index) => {
         const minutesListened = song.plays * song.duration
-        if(artists.hasOwnProperty(song.artist)){
-            artists[song.artist].minutesListened += minutesListened
-            artists[song.artist].songsCount++
-        } else {
-            artists[song.artist] = { name: song.artist, minutesListened, songsCount: 1, index }
-        }
+
+        song.artist.split(",").map(artist => artist.trim()).filter(artist => artist != "").forEach((artist) => {
+            if(artists.hasOwnProperty(artist)){
+                artists[artist].minutesListened += minutesListened
+                artists[artist].songsCount++
+            } else {
+                artists[artist] = { name: artist, minutesListened, songsCount: 1, index }
+            }
+        })
     })
 
     let sortedArtists = Object.values(artists).sort((a, b) => {
